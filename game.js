@@ -13,7 +13,40 @@ function end(){state='over';pauseBtn.classList.add('hidden');touchControls.class
 document.getElementById('startBtn').onclick=start;document.getElementById('restartBtn').onclick=start;document.getElementById('pauseBtn').onclick=pause;document.getElementById('resumeBtn').onclick=pause;
 addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key))e.preventDefault();keys[e.key]=true;if((e.key===' '||e.key==='ArrowUp'||e.key==='w'||e.key==='W')&&state==='playing')jump();if(e.key==='Escape')pause()});
 addEventListener('keyup',e=>keys[e.key]=false);
-document.querySelectorAll('.touch-controls button').forEach(b=>{let k=b.dataset.key;b.addEventListener('pointerdown',e=>{e.preventDefault();keys[k]=true;if(k==='ArrowUp'&&state==='playing')jump()});['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>keys[k]=false))});
+
+// Improved mobile touch controls
+document.querySelectorAll('.touch-controls button').forEach(b => {
+  const k = b.dataset.key;
+
+  b.addEventListener('pointerdown', e => {
+    e.preventDefault();
+
+    if (b.setPointerCapture) {
+      b.setPointerCapture(e.pointerId);
+    }
+
+    keys[k] = true;
+
+    if (k === 'ArrowUp' && state === 'playing') {
+      jump();
+    }
+  });
+
+  const release = e => {
+    keys[k] = false;
+  };
+
+  b.addEventListener('pointerup', release);
+  b.addEventListener('pointercancel', release);
+  b.addEventListener('lostpointercapture', release);
+});
+
+// Prevent unwanted mobile browser gestures
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('touchmove', e => {
+  if (state === 'playing') e.preventDefault();
+}, { passive: false });
+
 function jump(){if(player.onGround){player.vy=-690;player.onGround=false;player.duck=false;sound(420,.08)}}
 function rounded(x,y,w,h,r,color){ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
 function starPath(cx,cy,outer,inner){ctx.beginPath();for(let i=0;i<10;i++){let a=-Math.PI/2+i*Math.PI/5,r=i%2?inner:outer;let x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;i?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.closePath()}
@@ -31,7 +64,7 @@ function background(dt){
  ctx.fillStyle='#754b42';ctx.beginPath();ctx.moveTo(0,430);ctx.quadraticCurveTo(45,300,70,155);ctx.lineTo(105,160);ctx.quadraticCurveTo(95,330,160,430);ctx.fill();
  for(let i=0;i<14;i++){let x=randStatic(i,0,175),y=randStatic(i,0,140);ctx.fillStyle=['#ff8acb','#f7a0d5','#e978bd'][i%3];ctx.beginPath();ctx.arc(x,y,50+(i%3)*10,0,Math.PI*2);ctx.fill()}
  // ground
- ctx.fillStyle='#654a50';ctx.fillRect(0,groundY,W,H-groundY);ctx.fillStyle='#4fbd45';ctx.fillRect(0,groundY,W,28);ctx.fillStyle='#a5f35b';ctx.fillRect(0,groundY,W,7);
+ ctx.fillStyle='#4a5765';ctx.fillRect(0,groundY,W,H-groundY);ctx.fillStyle='#4fbd45';ctx.fillRect(0,groundY,W,28);ctx.fillStyle='#a5f35b';ctx.fillRect(0,groundY,W,7);
  for(let x=-(bgOffset%60);x<W;x+=60){ctx.fillStyle='#3d963f';ctx.fillRect(x,groundY+30,28,8);ctx.fillStyle='#98775c';ctx.fillRect(x+15,groundY+82,35,12);ctx.fillStyle='#5ccf54';ctx.beginPath();ctx.arc(x+25,groundY+3,5,0,Math.PI*2);ctx.fill()}
  for(let i=0;i<30;i++){let x=(i*47-bgOffset*.7%W+W)%W,y=groundY+randStatic(i,0,20);ctx.fillStyle=i%2?'#fff4b3':'#ffb8d9';ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);ctx.fill()}
 }
@@ -40,7 +73,7 @@ function drawGirl(){
  let p=player;ctx.save();ctx.translate(p.x+p.w/2,p.y+p.h/2);let bob=p.onGround?Math.sin(p.run*15)*3:0;ctx.translate(0,bob);if(p.inv>0&&Math.floor(elapsed*12)%2===0)ctx.globalAlpha=.4;
  if(shield>0){ctx.strokeStyle='#8df7ff';ctx.lineWidth=5;ctx.shadowColor='#70faff';ctx.shadowBlur=20;ctx.beginPath();ctx.ellipse(0,0,48,61,0,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0}
  // hair flowing behind
- ctx.fillStyle='#633342';ctx.beginPath();ctx.ellipse(-12,-16,31,39,-.2,0,Math.PI*2);ctx.fill();ctx.fillStyle='#8d4b50';ctx.beginPath();ctx.moveTo(-25,-15);ctx.quadraticCurveTo(-70,-5,-53,35);ctx.quadraticCurveTo(-28,22,-25,-15);ctx.fill();
+ ctx.fillStyle='#334163';ctx.beginPath();ctx.ellipse(-12,-16,31,39,-.2,0,Math.PI*2);ctx.fill();ctx.fillStyle='#8d4b50';ctx.beginPath();ctx.moveTo(-25,-15);ctx.quadraticCurveTo(-70,-5,-53,35);ctx.quadraticCurveTo(-28,22,-25,-15);ctx.fill();
  // legs
  // Realistic running legs animation
 let phase = player.run * 2.8;
