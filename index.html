@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dreamy Fairy Adventure</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="game-shell">
+    <canvas id="game" width="1200" height="675" aria-label="Dreamy Fairy Adventure game"></canvas>
+    <section id="startScreen" class="overlay">
+      <div class="panel">
+        <div class="eyebrow">✦ A MAGICAL FOREST QUEST ✦</div>
+        <h1>Dreamy Fairy<br><span>Adventure</span></h1>
+        <p>Run through the enchanted forest, collect golden stars<br>and protect your three hearts!</p>
+        <div class="howto">
+          <span>← → Move</span><span>↑ / SPACE Jump</span><span>↓ Duck</span>
+        </div>
+        <button id="startBtn">START ADVENTURE <b>➜</b></button>
+        <small>Collect ⭐ stars · Grab 🌈 shields · Avoid logs, crates & mushrooms</small>
+      </div>
+    </section>
+    <section id="pauseScreen" class="overlay hidden">
+      <div class="panel compact"><div class="eyebrow">✦ TAKE A BREATH ✦</div><h2>Adventure Paused</h2><p>Your magical journey is waiting.</p><button id="resumeBtn">RESUME</button></div>
+    </section>
+    <section id="gameOverScreen" class="overlay hidden">
+      <div class="panel compact"><div class="eyebrow">✦ THE FOREST IS QUIET ✦</div><h2>Game Over!</h2><p id="finalStats">You collected 0 stars.</p><button id="restartBtn">PLAY AGAIN ↻</button></div>
+    </section>
+    <button id="pauseBtn" class="pause hidden" aria-label="Pause">Ⅱ</button>
+    <div class="touch-controls hidden" id="touchControls">
+      <button data-key="ArrowLeft">◀</button><button data-key="ArrowRight">▶</button>
+      <button data-key="ArrowUp">▲</button><button data-key="ArrowDown">▼</button>
+    </div>
+  </main>
+  <footer>Dreamy Fairy Adventure <span>•</span> Multimedia Systems Lab Test 2</footer>
+  <script src="game.js"></script>
+</body>
+</html>
